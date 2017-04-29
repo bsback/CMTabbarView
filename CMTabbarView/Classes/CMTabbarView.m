@@ -67,14 +67,6 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
     return self;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-    if (self = [super initWithCoder:aDecoder]) {
-        [self commonInit];
-    }
-    return self;
-}
-
 - (void)commonInit
 {
     _scrollEnable = true;
@@ -162,9 +154,29 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGSize s = CGSizeZero;
     NSString *tabTitle = [self titleAtIndex:indexPath.row];
     CGSize size = [tabTitle sizeWithAttributes:self.normalAttributes];
-    return CGSizeMake(size.width+CMTabbarViewDefaultPadding, MIN(size.height+CMTabbarViewDefaultPadding, collectionView.bounds.size.height));
+    if (!_equalWidth) {
+        s = CGSizeMake(size.width+CMTabbarViewDefaultPadding, MIN(size.height+CMTabbarViewDefaultPadding, collectionView.bounds.size.height));
+    }else{
+        CGFloat w = self.collectionView.bounds.size.width*1.0f/self.tabbarTitles.count;
+        s = CGSizeMake(w, MIN(size.height+CMTabbarViewDefaultPadding, collectionView.bounds.size.height));
+    }
+    return s;
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(0, 0, 0, 0); // top, left, bottom, right
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
+    
+    return 0.0;
+}
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
+    return 0.0;
 }
 
 #pragma mark - UICollectionViewDeleagte
@@ -193,7 +205,7 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
 
 - (void)reloadData
 {
-    NSAssert([_dataSource respondsToSelector:@selector(tabbarTitlesForTabbarView:)], @"'tabbarTitlesForTabbarView' Method must be implement");
+    NSAssert([_dataSource respondsToSelector:@selector(tabbarTitlesForTabbarView:)], @"Method must be implement");
     NSArray *array = [_dataSource tabbarTitlesForTabbarView:self];
     if (!array.count) {
         return ;
@@ -218,7 +230,7 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
 - (void)setContentInset:(UIEdgeInsets)contentInset
 {
     _contentInset = contentInset;
-    contentInset.bottom += [self.indicatorAttributes[CMTabIndicatorViewHeight] floatValue];
+//    contentInset.bottom += [self.indicatorAttributes[CMTabIndicatorViewHeight] floatValue];
     self.collectionView.contentInset = contentInset;
 }
 
@@ -231,6 +243,10 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
 - (void)setTabPadding:(CGFloat)tabPadding
 {
     _tabPadding = tabPadding;
+    [self.collectionView reloadData];
+}
+-(void)setEqualWidth:(BOOL)equalWidth{
+    _equalWidth = equalWidth;
     [self.collectionView reloadData];
 }
 
@@ -248,7 +264,7 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
 
 - (void)setDefaultSelectedIndex:(NSUInteger)defaultSelectedIndex
 {
-    if ((self.tabbarOffsetX == CMTabBarViewTabOffsetInvalid) || (_defaultSelectedIndex != defaultSelectedIndex)) {
+    if (self.tabbarOffsetX == CMTabBarViewTabOffsetInvalid) {
         self.haveShowedDefault = false;
         _tabbarOffsetX = defaultSelectedIndex;
         _defaultSelectedIndex = defaultSelectedIndex;
