@@ -42,9 +42,9 @@ extern NSString *const CMTabBoxBackgroundColor;
 
 @interface CMTabbarView : UIView
 
-@property (weak,   nonatomic) IBOutlet id <CMTabbarViewDatasouce> dataSource;
+@property (weak,   nonatomic) id <CMTabbarViewDatasouce> dataSource;
 
-@property (weak,   nonatomic) IBOutlet id <CMTabbarViewDelegate> delegate;
+@property (weak,   nonatomic) id <CMTabbarViewDelegate> delegate;
 /**
  Whether the user need color Gradient,Default is true
  */
@@ -82,7 +82,7 @@ extern NSString *const CMTabBoxBackgroundColor;
 /**
  User default index
  */
-@property (assign, nonatomic) IBInspectable NSUInteger defaultSelectedIndex;
+@property (assign, nonatomic) NSUInteger defaultSelectedIndex;
 /**
   Content Inset
  */
@@ -91,6 +91,8 @@ extern NSString *const CMTabBoxBackgroundColor;
  The tab offsetX of the View.
  */
 @property (assign, nonatomic) CGFloat tabbarOffsetX;
+
+@property (assign, nonatomic) BOOL equalWidth;
 /**
  Set the current selected tab
 
