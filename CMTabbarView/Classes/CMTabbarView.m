@@ -158,7 +158,7 @@ NSString *  const CMTabBoxBackgroundColor = @"CMBoxbackgroundColor";
     NSString *tabTitle = [self titleAtIndex:indexPath.row];
     CGSize size = [tabTitle sizeWithAttributes:self.normalAttributes];
     if (!_equalWidth) {
-        s = CGSizeMake(size.width+CMTabbarViewDefaultPadding, MIN(size.height+CMTabbarViewDefaultPadding, collectionView.bounds.size.height));
+        s = CGSizeMake(size.width+15*2, MIN(size.height+CMTabbarViewDefaultPadding, collectionView.bounds.size.height));
     }else{
         CGFloat w = self.collectionView.bounds.size.width*1.0f/self.tabbarTitles.count;
         s = CGSizeMake(w, MIN(size.height+CMTabbarViewDefaultPadding, collectionView.bounds.size.height));
